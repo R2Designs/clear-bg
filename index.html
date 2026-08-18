@@ -224,7 +224,7 @@
     border-radius: 22px;
     background: var(--surface-2);
     backdrop-filter: blur(6px);
-    padding: 64px 28px;
+    padding: 36px 28px;
     text-align: center;
     transition: border-color .18s, background .18s, transform .18s;
     box-shadow: var(--shadow);
@@ -599,7 +599,7 @@
   }
   .faq-list details[open] { border-color: var(--muted); }
   .faq-list summary {
-    cursor: pointer; padding: 16px 0; font-weight: 650; font-size: 15px;
+    cursor: pointer; padding: 16px 0; font-weight: 400; font-size: 15px;
     list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px;
   }
   .faq-list summary::-webkit-details-marker { display: none; }
@@ -755,7 +755,7 @@
   <section class="drop" id="drop">
     <button class="btn" id="pick">Upload Image</button>
     <input type="file" id="file" accept="image/*" hidden />
-    <div class="hint">or <b>drop an image here</b> &nbsp;·&nbsp; paste with <b>⌘V</b> &nbsp;·&nbsp; JPG, PNG, WEBP up to 25&nbsp;MB</div>
+    <div class="hint">or <b>drop an image here</b> &nbsp;·&nbsp; paste with <b>⌘V</b><br />JPG, PNG, WEBP up to 25&nbsp;MB</div>
   </section>
 
   <div class="error" id="error"></div>
