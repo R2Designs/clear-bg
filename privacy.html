@@ -43,6 +43,9 @@
   p, li { color: #d0d0d0; font-size: 15px; line-height: 1.7; }
   ul { padding-left: 20px; }
   a { color: var(--ink); }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--line); color: #d0d0d0; vertical-align: top; }
+  th { color: var(--ink); font-weight: 700; }
   footer { max-width: 720px; margin: 0 auto; padding: 0 28px 60px; color: var(--muted); font-size: 13px; }
   footer a { color: var(--muted); }
 </style>
@@ -60,22 +63,41 @@
   <h1>Privacy Policy</h1>
   <p class="updated">Last updated: August 2026</p>
 
-  <p>Bg Free is a background-removal tool that runs entirely in your browser. This page explains exactly what that means for your data.</p>
+  <p>Bg Free is a background-removal tool that runs entirely in your browser. This page explains exactly what that means for your data, in plain terms, and covers every category of data this site touches.</p>
 
   <h2>Your photos never leave your device</h2>
-  <p>Bg Free does not have a server that receives your images. When you upload a photo, it is processed on-device using a machine learning model that runs locally in your browser via WebAssembly. At no point is the image you're editing transmitted to us, stored by us, or seen by us.</p>
+  <p>Bg Free does not have a server that receives your images. When you upload a photo, it is processed on-device using a machine learning model that runs locally in your browser via WebAssembly. At no point is the image you're editing transmitted to us, stored by us, or seen by us. This applies to every image operation in the tool, including the Magic Brush, background replacement, and background blur — all of it happens locally.</p>
 
   <h2>What is downloaded to your browser</h2>
-  <p>The first time you use Bg Free, your browser downloads the background-removal model (roughly 45–90&nbsp;MB) from a third-party content delivery network so it can run locally. This is a one-time download of our model files — it does not involve sending any of your photos anywhere. Standard web request metadata (such as your IP address) is visible to that CDN in the same way it would be for any file downloaded from any website.</p>
+  <p>The first time you use Bg Free, your browser downloads the background-removal model (roughly 45–90&nbsp;MB) from a third-party content delivery network so it can run locally. This is a one-time download of our model files — it does not involve sending any of your photos anywhere. Standard web request metadata (such as your IP address) is visible to that CDN in the same way it would be for any file downloaded from any website, since that's how HTTP requests work generally.</p>
+
+  <h2>Third-party services this site uses</h2>
+  <table>
+    <tr><th>Service</th><th>Purpose</th><th>Sees your photo?</th></tr>
+    <tr><td>Model CDN (staticimgly.com / unpkg.com)</td><td>Delivers the background-removal model files to your browser</td><td>No</td></tr>
+    <tr><td>Google Analytics</td><td>Aggregate, anonymized site usage (visits, pages viewed, device/browser type)</td><td>No</td></tr>
+    <tr><td>Google AdSense <em>(not yet enabled)</em></td><td>Would serve ads if/when enabled — see "Advertising" below</td><td>No</td></tr>
+  </table>
+  <p>No service used by this site, present or planned, has any code path that could receive the image you're editing. The claims on this page describe the code as actually written, not an aspiration.</p>
 
   <h2>Analytics</h2>
-  <p>We use Google Analytics to understand aggregate, anonymized usage of this site — for example, how many people visit, which pages are viewed, and general device/browser information. Google Analytics uses cookies and similar technologies to do this. It does not have access to the photos you process, since those never leave your device. You can opt out of Google Analytics tracking using browser extensions such as the official <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics Opt-out Browser Add-on</a>.</p>
+  <p>We use Google Analytics to understand aggregate, anonymized usage of this site — for example, how many people visit, which pages are viewed, and general device/browser information. Google Analytics uses cookies and similar technologies to do this. It does not have access to the photos you process, since those never leave your device. You can opt out of Google Analytics tracking using browser extensions such as the official <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics Opt-out Browser Add-on</a>, or by blocking cookies for this site in your browser settings.</p>
+
+  <h2>Advertising</h2>
+  <p>This site does not currently show advertisements. If Google AdSense is enabled in the future, this section will describe exactly what that means: AdSense would use cookies and similar technologies to serve ads, which may include personalized advertising based on your visits to this and other sites. You would be able to control ad personalization through <a href="https://adssettings.google.com" target="_blank" rel="noopener">Google's Ads Settings</a>, and this policy will be updated — with the "last updated" date above changing accordingly — before any ads go live. Enabling AdSense would never change how your photos are processed; that part of the architecture (fully on-device) would remain the same.</p>
 
   <h2>Local storage</h2>
   <p>Bg Free uses your browser's local storage to remember small preferences on your own device — such as your light/dark theme choice and whether you've dismissed the announcement banner. This data stays on your device and is never transmitted to us.</p>
 
   <h2>No accounts, no signup</h2>
   <p>Bg Free does not have user accounts, logins, or a database of users. We don't collect names, emails, or passwords, because there's nowhere for you to enter them.</p>
+
+  <h2>Your choices</h2>
+  <ul>
+    <li>Block or clear cookies for this site at any time in your browser settings — the tool itself still works, since it doesn't depend on cookies to process images.</li>
+    <li>Use the Google Analytics opt-out extension linked above to stop analytics tracking entirely.</li>
+    <li>Clear your browser's local storage for this site to reset saved preferences (theme, banner dismissal).</li>
+  </ul>
 
   <h2>Children's privacy</h2>
   <p>Bg Free does not knowingly collect personal information from children. Since the tool doesn't collect personal information from anyone in the first place, this applies equally to all users.</p>
@@ -88,7 +110,7 @@
 </main>
 
 <footer>
-  <a href="./">← Back to Bg Free</a> &nbsp;·&nbsp; <a href="about.html">About</a>
+  <a href="./">← Back to Bg Free</a> &nbsp;·&nbsp; <a href="about.html">About</a> &nbsp;·&nbsp; <a href="terms.html">Terms</a>
 </footer>
 
 </body>

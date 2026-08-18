@@ -68,6 +68,10 @@
   <h2>What it does</h2>
   <p>Upload a photo and Bg Free isolates the subject from its background in a few seconds to a couple of minutes, depending on your device. From there you can download a transparent PNG, drop in a solid color or your own background photo, blur the backdrop for a portrait-mode look, and clean up any rough edges by hand with the Magic Brush.</p>
 
+  <h2>Why it runs entirely in your browser</h2>
+  <p>Most background removers work by uploading your photo to a server. That's a reasonable design, but it means your image leaves your device, and it means the service needs to cover server costs somehow — usually with accounts, usage limits, or a paywall. Bg Free takes the other path: it downloads a segmentation model once and runs it on your device via WebAssembly. Your photo never has to leave your browser to get processed, and because there's no per-image server cost, there's no reason to meter usage or ask for a signup.</p>
+  <p>The tradeoff is real and worth stating plainly: an on-device model that has to fit in a browser download is smaller than what a well-resourced server can run, so on genuinely difficult images — wide open landscape photography with no distinct subject, for example — it can fail where a heavier server-side model might succeed. That's a deliberate tradeoff in exchange for privacy and cost, not an oversight.</p>
+
   <h2>Who built it</h2>
   <p>Bg Free is an independent project by <a href="https://r2designs.github.io" target="_blank" rel="noopener">R2Designs</a>. It's built and maintained as a side project, iterated on based on what's actually useful for real editing work rather than what fits a pricing tier.</p>
 
@@ -78,7 +82,7 @@
 </main>
 
 <footer>
-  <a href="./">← Back to Bg Free</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a>
+  <a href="./">← Back to Bg Free</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="terms.html">Terms</a>
 </footer>
 
 </body>
