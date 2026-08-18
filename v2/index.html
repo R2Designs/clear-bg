@@ -3,7 +3,26 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Clear BG — remove image backgrounds in your browser</title>
+<title>Clear BG — Free Online Background Remover, No Signup Required</title>
+<meta name="description" content="Remove image backgrounds instantly in your browser — free, unlimited, no signup, no account, no watermark. Your photos never leave your device. Works on people, products, and objects." />
+<meta name="keywords" content="remove background, background remover, free background remover, remove image background, transparent background, no signup background remover, AI background removal, photo background eraser" />
+<link rel="canonical" href="https://r2designs.github.io/clear-bg/" />
+<meta name="robots" content="index, follow" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Clear BG — Free Online Background Remover, No Signup Required" />
+<meta property="og:description" content="Remove image backgrounds instantly in your browser — free, unlimited, no signup, no watermark. Your photos never leave your device." />
+<meta property="og:url" content="https://r2designs.github.io/clear-bg/" />
+<meta property="og:image" content="https://r2designs.github.io/clear-bg/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Clear BG" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Clear BG — Free Online Background Remover, No Signup Required" />
+<meta name="twitter:description" content="Remove image backgrounds instantly in your browser — free, unlimited, no signup, no watermark." />
+<meta name="twitter:image" content="https://r2designs.github.io/clear-bg/og-image.png" />
+
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23222222'/%3E%3Cg transform='translate(4,4)' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z'/%3E%3Cline x1='16' y1='8' x2='2' y2='22'/%3E%3Cline x1='17.5' y1='15' x2='9' y2='15'/%3E%3C/g%3E%3C/svg%3E" />
 <!-- Optional: unlocks multi-threaded WASM (much faster inference) on hosts
      that can't set COOP/COEP headers, e.g. GitHub Pages. Deploy
@@ -91,6 +110,31 @@
   .theme-toggle .sun { display: none; }
   html[data-theme="light"] .theme-toggle .moon { display: none; }
   html[data-theme="light"] .theme-toggle .sun { display: block; }
+
+  .announce-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 40px 8px 16px;
+    background: var(--ink);
+    color: var(--bg);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    text-align: center;
+    position: relative;
+  }
+  .announce-bar.hidden { display: none; }
+  .announce-close {
+    appearance: none; border: 0; background: transparent; color: var(--bg);
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    width: 22px; height: 22px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; opacity: .7; transition: opacity .12s, background .12s;
+  }
+  .announce-close:hover { opacity: 1; background: rgba(128,128,128,.2); }
+  .announce-close svg { width: 13px; height: 13px; }
 
   header {
     display: flex;
@@ -532,6 +576,30 @@
     .edit-panel .panel-card:last-child { border-bottom: 0; }
   }
 
+  /* ---------- FAQ ---------- */
+  .faq { margin-top: 64px; max-width: 720px; margin-left: auto; margin-right: auto; }
+  .faq h2 {
+    font-size: 26px; font-weight: 800; letter-spacing: -.02em;
+    text-align: center; margin: 0 0 24px;
+  }
+  .faq-list { display: flex; flex-direction: column; gap: 10px; }
+  .faq-list details {
+    border: 1px solid var(--line); border-radius: 14px;
+    background: var(--surface-2); padding: 4px 20px; transition: border-color .15s;
+  }
+  .faq-list details[open] { border-color: var(--muted); }
+  .faq-list summary {
+    cursor: pointer; padding: 16px 0; font-weight: 650; font-size: 15px;
+    list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary::after {
+    content: "+"; font-size: 20px; font-weight: 400; color: var(--muted);
+    flex-shrink: 0; transition: transform .15s;
+  }
+  .faq-list details[open] summary::after { transform: rotate(45deg); }
+  .faq-list p { margin: 0 0 18px; color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+
   @media (max-width: 620px) {
     header, main { padding-left: 16px; padding-right: 16px; }
     .filename { max-width: 60vw; }
@@ -547,8 +615,111 @@
     }
   } catch (e) {}
 </script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Clear BG",
+  "url": "https://r2designs.github.io/clear-bg/",
+  "applicationCategory": "PhotoEditingApplication",
+  "operatingSystem": "Any (runs in a web browser)",
+  "description": "Remove image backgrounds instantly in your browser — free, unlimited, no signup, no watermark. Photos are processed entirely on-device and never uploaded.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is Clear BG really free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — completely free, with no usage limits, no watermark, and no upgrade prompts. There's no paid tier because there's no server cost to cover: the background-removal model runs on your own device."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to create an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. There's no signup, no login, and no email required. Open the page and start removing backgrounds immediately."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are my photos uploaded to a server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Every image you process stays on your device — the AI model downloads once to your browser and does all the work locally. Nothing is ever sent anywhere."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What image formats are supported?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "JPG, PNG, and WEBP, up to 25 MB. Results download as transparent PNGs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use the results commercially?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. There's no watermark and no license restriction from Clear BG on the output image — just make sure you have rights to the original photo itself."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if the background isn't removed perfectly?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use the Magic Brush to erase or restore any area by hand — it's edge-aware, so a rough stroke still snaps to the real outline instead of cutting a hard circle through your subject."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on mobile?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, in any modern mobile browser. Processing speed depends on your device's hardware, so it may take longer than on a desktop."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- Google Analytics (GA4) —
+     REPLACE "G-XXXXXXXXXX" BELOW WITH YOUR REAL MEASUREMENT ID.
+     Get one at analytics.google.com → Admin → Create Property → add a
+     Web data stream for r2designs.github.io/clear-bg. Until you swap
+     it in, this snippet points at a placeholder ID and sends no real
+     data anywhere. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag("js", new Date());
+  gtag("config", "G-XXXXXXXXXX");
+</script>
 </head>
 <body>
+
+<div class="announce-bar" id="announceBar">
+  <span>No signup&nbsp;&middot;&nbsp;No accounts&nbsp;&middot;&nbsp;No trial&nbsp;&middot;&nbsp;100% free, forever</span>
+  <button class="announce-close" id="announceClose" aria-label="Dismiss">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
 
 <header>
   <div class="brand">
@@ -577,6 +748,40 @@
   </section>
 
   <div class="error" id="error"></div>
+
+  <section class="faq" id="faqSection">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-list">
+      <details>
+        <summary>Is Clear BG really free?</summary>
+        <p>Yes — completely free, with no usage limits, no watermark, and no upgrade prompts. There's no paid tier because there's no server cost to cover: the background-removal model runs on your own device.</p>
+      </details>
+      <details>
+        <summary>Do I need to create an account?</summary>
+        <p>No. There's no signup, no login, and no email required. Open the page and start removing backgrounds immediately.</p>
+      </details>
+      <details>
+        <summary>Are my photos uploaded to a server?</summary>
+        <p>No. Every image you process stays on your device — the AI model downloads once to your browser and does all the work locally. Nothing is ever sent anywhere, which is also why the very first run takes longer (it's downloading the model, not your image).</p>
+      </details>
+      <details>
+        <summary>What image formats are supported?</summary>
+        <p>JPG, PNG, and WEBP, up to 25&nbsp;MB. Results download as transparent PNGs.</p>
+      </details>
+      <details>
+        <summary>Can I use the results commercially?</summary>
+        <p>Yes. There's no watermark and no license restriction from Clear BG on the output image — just make sure you have rights to the original photo itself.</p>
+      </details>
+      <details>
+        <summary>What if the background isn't removed perfectly?</summary>
+        <p>Use the Magic Brush to erase or restore any area by hand — it's edge-aware, so a rough stroke still snaps to the real outline instead of cutting a hard circle through your subject.</p>
+      </details>
+      <details>
+        <summary>Does it work on mobile?</summary>
+        <p>Yes, in any modern mobile browser. Processing speed depends on your device's hardware, so it may take longer than on a desktop.</p>
+      </details>
+    </div>
+  </section>
 
   <section class="workspace" id="workspace" style="margin-top:22px">
     <div class="stage">
@@ -684,6 +889,8 @@
 
 <footer>
   ISNet segmentation model running on-device via WebAssembly &nbsp;·&nbsp; <span id="modelName">no server, no upload</span>
+  <br />
+  <a href="../about.html">About</a> &nbsp;·&nbsp; <a href="../privacy.html">Privacy Policy</a>
 </footer>
 
 <script>
@@ -2627,12 +2834,25 @@ onnxruntime-web/dist/esm/ort.min.js:
     download: $("download"), reset: $("reset"),
     dot: $("dot"), statusText: $("statusText"), modelName: $("modelName"),
     themeToggle: $("themeToggle"),
+    announceBar: $("announceBar"), announceClose: $("announceClose"),
+    faqSection: $("faqSection"),
     flipBtn: $("flipBtn"), undoBtn: $("undoBtn"), redoBtn: $("redoBtn"),
     brushTools: $("brushTools"), brushSize: $("brushSize"), magicBrushToggle: $("magicBrushToggle"),
     bgTabs: $("bgTabs"), bgPhoto: $("bgPhoto"),
     uploadBgBtn: $("uploadBgBtn"), bgPhotoFile: $("bgPhotoFile"), presetGrid: $("presetGrid"),
     blurToggle: $("blurToggle"), blurAmountRow: $("blurAmountRow"), blurAmount: $("blurAmount"),
   };
+
+  /* ---------- announcement bar ---------- */
+  try {
+    if (localStorage.getItem("clearbg-announce-dismissed") === "1") {
+      el.announceBar.classList.add("hidden");
+    }
+  } catch (e) {}
+  el.announceClose.addEventListener("click", () => {
+    el.announceBar.classList.add("hidden");
+    try { localStorage.setItem("clearbg-announce-dismissed", "1"); } catch (e) {}
+  });
 
   /* ---------- theme ---------- */
   el.themeToggle.addEventListener("click", () => {
@@ -2980,6 +3200,7 @@ onnxruntime-web/dist/esm/ort.min.js:
 
     el.hero.style.display = "none";
     el.drop.style.display = "none";
+    el.faqSection.style.display = "none";
     el.workspace.classList.add("on");
     el.fname.textContent = file.name;
     el.fmeta.textContent = `${(file.size / 1024).toFixed(0)} KB · processing…`;
@@ -3589,6 +3810,7 @@ onnxruntime-web/dist/esm/ort.min.js:
     el.workspace.classList.remove("on");
     el.hero.style.display = "";
     el.drop.style.display = "";
+    el.faqSection.style.display = "";
     hideError();
     el.frame.innerHTML = "";
     window.scrollTo({ top: 0, behavior: "smooth" });
