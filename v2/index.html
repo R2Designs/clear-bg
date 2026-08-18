@@ -146,12 +146,12 @@
   main {
     max-width: 1120px;
     margin: 0 auto;
-    padding: 8px 28px 72px;
+    padding: 28px 28px 72px;
   }
 
-  .hero { text-align: center; padding: 26px 0 30px; }
+  .hero { text-align: center; padding: 30px 0 44px; }
   .hero h1 {
-    margin: 0 0 12px;
+    margin: 0 0 16px;
     font-size: clamp(30px, 5vw, 46px);
     line-height: 1.08;
     letter-spacing: -.03em;
@@ -170,7 +170,7 @@
     border-radius: 22px;
     background: var(--surface-2);
     backdrop-filter: blur(6px);
-    padding: 52px 28px;
+    padding: 64px 28px;
     text-align: center;
     transition: border-color .18s, background .18s, transform .18s;
     box-shadow: var(--shadow);
@@ -210,29 +210,6 @@
 
   .hint { margin-top: 14px; font-size: 13px; color: var(--muted); }
   .hint b { color: var(--ink); font-weight: 600; }
-
-  .samples {
-    margin-top: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    font-size: 13px;
-    color: var(--muted);
-  }
-  .samples button {
-    width: 54px; height: 54px;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    padding: 0;
-    overflow: hidden;
-    cursor: pointer;
-    background: var(--surface-2);
-    transition: transform .14s, border-color .14s;
-  }
-  .samples button:hover { transform: translateY(-2px); border-color: var(--accent); }
-  .samples img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* ---------- workspace ---------- */
   .workspace { display: none; }
@@ -281,6 +258,8 @@
     transition: background .14s, color .14s;
   }
   .seg button.active { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+
+  .stage-main { display: block; }
 
   .canvas-wrap {
     position: relative;
@@ -473,13 +452,13 @@
 
   /* ---------- edit panel (magic brush + background) ---------- */
   .edit-panel { border-top: 1px solid var(--line); }
-  .panel-card { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  .panel-card { padding: 18px 16px; border-bottom: 1px solid var(--line); }
   .panel-title {
     font-size: 12px; font-weight: 700; color: var(--muted);
     text-transform: uppercase; letter-spacing: .04em; margin-bottom: 10px;
   }
 
-  .tool-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tool-toggle { display: flex; gap: 8px; max-width: 360px; margin-bottom: 26px; }
   .tool-btn {
     flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
     padding: 10px; border-radius: 10px; border: 1px solid var(--line);
@@ -489,7 +468,7 @@
   .tool-btn svg { width: 16px; height: 16px; }
   .tool-btn.active { border-color: var(--ink); background: var(--surface-2); }
 
-  .field-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .field-row { display: flex; align-items: center; gap: 10px; max-width: 360px; margin-bottom: 12px; }
   .field-label { font-size: 12.5px; color: var(--muted); font-weight: 600; min-width: 82px; flex-shrink: 0; }
 
   input[type="range"] {
@@ -509,7 +488,9 @@
   .switch-row {
     display: flex; align-items: center; justify-content: space-between;
     gap: 10px; font-size: 13.5px; font-weight: 600; cursor: pointer;
+    max-width: 360px; margin-top: 18px;
   }
+  .blur-toggle-row { margin-top: 22px; }
   .switch { position: relative; display: inline-block; width: 38px; height: 22px; flex-shrink: 0; }
   .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
   .switch-track { position: absolute; inset: 0; background: var(--line); border-radius: 999px; transition: background-color .15s; }
@@ -538,6 +519,19 @@
   .preset-grid button.sel { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); }
   .preset-grid canvas { width: 100%; height: 100%; display: block; }
 
+  /* Side-by-side layout: canvas left, edit panel as a right-hand sidebar.
+     Below this width the panel stays stacked under the canvas instead. */
+  @media (min-width: 860px) {
+    .stage-main { display: flex; align-items: stretch; }
+    .canvas-wrap { flex: 1; min-width: 0; }
+    .edit-panel {
+      width: 320px; flex-shrink: 0;
+      border-top: 0; border-left: 1px solid var(--line);
+      display: flex; flex-direction: column;
+    }
+    .edit-panel .panel-card:last-child { border-bottom: 0; }
+  }
+
   @media (max-width: 620px) {
     header, main { padding-left: 16px; padding-right: 16px; }
     .filename { max-width: 60vw; }
@@ -559,7 +553,7 @@
 <header>
   <div class="brand">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg></span>
-    Clear BG <small>runs locally</small>
+    Clear BG
   </div>
   <div class="status" id="status">
     <span class="dot" id="dot"></span><span id="statusText">checking engine…</span>
@@ -580,10 +574,6 @@
     <button class="btn" id="pick">Upload Image</button>
     <input type="file" id="file" accept="image/*" hidden />
     <div class="hint">or <b>drop an image here</b> &nbsp;·&nbsp; paste with <b>⌘V</b> &nbsp;·&nbsp; JPG, PNG, WEBP up to 25&nbsp;MB</div>
-
-    <div class="samples" id="samples">
-      <span>No image handy? Try one:</span>
-    </div>
   </section>
 
   <div class="error" id="error"></div>
@@ -614,70 +604,72 @@
         </div>
       </div>
 
-      <div class="canvas-wrap">
-        <div class="frame" id="frame"></div>
-        <div class="overlay" id="overlay">
-          <div>
-            <div class="spinner"></div>
-            <p id="overlayText">Removing background…</p>
-            <small id="overlaySub">First run loads the model — this one takes longer.</small>
+      <div class="stage-main">
+        <div class="canvas-wrap">
+          <div class="frame" id="frame"></div>
+          <div class="overlay" id="overlay">
+            <div>
+              <div class="spinner"></div>
+              <p id="overlayText">Removing background…</p>
+              <small id="overlaySub">First run loads the model — this one takes longer.</small>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="edit-panel">
-        <div class="panel-card">
-          <div class="panel-title">Magic Brush</div>
-          <div class="tool-toggle" id="brushTools">
-            <button class="tool-btn" data-tool="erase">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-              Erase
-            </button>
-            <button class="tool-btn" data-tool="restore">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-              Restore
-            </button>
-          </div>
-          <div class="field-row">
-            <span class="field-label">Brush Size</span>
-            <input type="range" id="brushSize" min="8" max="150" value="40" />
-          </div>
-          <label class="switch-row">
-            <span>Magic Brush</span>
-            <span class="switch"><input type="checkbox" id="magicBrushToggle" checked /><span class="switch-track"></span></span>
-          </label>
-        </div>
-
-        <div class="panel-card">
-          <div class="panel-title">Background</div>
-          <div class="tabs" id="bgTabs">
-            <button class="tab-btn active" data-tab="color">Color</button>
-            <button class="tab-btn" data-tab="photo">Photo</button>
+        <div class="edit-panel">
+          <div class="panel-card">
+            <div class="panel-title">Magic Brush</div>
+            <div class="tool-toggle" id="brushTools">
+              <button class="tool-btn" data-tool="erase">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Erase
+              </button>
+              <button class="tool-btn" data-tool="restore">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Restore
+              </button>
+            </div>
+            <div class="field-row">
+              <span class="field-label">Brush Size</span>
+              <input type="range" id="brushSize" min="8" max="150" value="40" />
+            </div>
+            <label class="switch-row">
+              <span>Magic Brush</span>
+              <span class="switch"><input type="checkbox" id="magicBrushToggle" checked /><span class="switch-track"></span></span>
+            </label>
           </div>
 
-          <div class="bgbar" id="bgbar" data-tabpanel="color">
-            <button class="swatch transparent sel" data-bg="transparent" title="Transparent"></button>
-            <button class="swatch" data-bg="#ffffff" style="background:#ffffff" title="White"></button>
-            <button class="swatch" data-bg="#14202b" style="background:#14202b" title="Charcoal"></button>
-            <button class="swatch" data-bg="#2ac1a0" style="background:#2ac1a0" title="Teal"></button>
-            <button class="swatch" data-bg="#f4c9d6" style="background:#f4c9d6" title="Blush"></button>
-            <button class="swatch" data-bg="#1aa3c9" style="background:#1aa3c9" title="Blue"></button>
-            <button class="swatch" data-bg="#f5e6c8" style="background:#f5e6c8" title="Sand"></button>
-          </div>
+          <div class="panel-card">
+            <div class="panel-title">Background</div>
+            <div class="tabs" id="bgTabs">
+              <button class="tab-btn active" data-tab="color">Color</button>
+              <button class="tab-btn" data-tab="photo">Photo</button>
+            </div>
 
-          <div class="bg-photo" id="bgPhoto" data-tabpanel="photo" hidden>
-            <button class="btn ghost" id="uploadBgBtn">Upload background</button>
-            <input type="file" id="bgPhotoFile" accept="image/*" hidden />
-            <div class="preset-grid" id="presetGrid"></div>
-          </div>
+            <div class="bgbar" id="bgbar" data-tabpanel="color">
+              <button class="swatch transparent sel" data-bg="transparent" title="Transparent"></button>
+              <button class="swatch" data-bg="#ffffff" style="background:#ffffff" title="White"></button>
+              <button class="swatch" data-bg="#14202b" style="background:#14202b" title="Charcoal"></button>
+              <button class="swatch" data-bg="#2ac1a0" style="background:#2ac1a0" title="Teal"></button>
+              <button class="swatch" data-bg="#f4c9d6" style="background:#f4c9d6" title="Blush"></button>
+              <button class="swatch" data-bg="#1aa3c9" style="background:#1aa3c9" title="Blue"></button>
+              <button class="swatch" data-bg="#f5e6c8" style="background:#f5e6c8" title="Sand"></button>
+            </div>
 
-          <label class="switch-row">
-            <span>Blur background</span>
-            <span class="switch"><input type="checkbox" id="blurToggle" /><span class="switch-track"></span></span>
-          </label>
-          <div class="field-row" id="blurAmountRow" style="margin-top:12px; display:none;">
-            <span class="field-label">Blur amount</span>
-            <input type="range" id="blurAmount" min="2" max="30" value="12" />
+            <div class="bg-photo" id="bgPhoto" data-tabpanel="photo" hidden>
+              <button class="btn ghost" id="uploadBgBtn">Upload background</button>
+              <input type="file" id="bgPhotoFile" accept="image/*" hidden />
+              <div class="preset-grid" id="presetGrid"></div>
+            </div>
+
+            <label class="switch-row blur-toggle-row">
+              <span>Blur background</span>
+              <span class="switch"><input type="checkbox" id="blurToggle" /><span class="switch-track"></span></span>
+            </label>
+            <div class="field-row" id="blurAmountRow" style="margin-top:12px; display:none;">
+              <span class="field-label">Blur amount</span>
+              <input type="range" id="blurAmount" min="2" max="30" value="12" />
+            </div>
           </div>
         </div>
       </div>
@@ -2634,7 +2626,7 @@ onnxruntime-web/dist/esm/ort.min.js:
     viewSeg: $("viewSeg"), bgbar: $("bgbar"),
     download: $("download"), reset: $("reset"),
     dot: $("dot"), statusText: $("statusText"), modelName: $("modelName"),
-    samples: $("samples"), themeToggle: $("themeToggle"),
+    themeToggle: $("themeToggle"),
     flipBtn: $("flipBtn"), undoBtn: $("undoBtn"), redoBtn: $("redoBtn"),
     brushTools: $("brushTools"), brushSize: $("brushSize"), magicBrushToggle: $("magicBrushToggle"),
     bgTabs: $("bgTabs"), bgPhoto: $("bgPhoto"),
@@ -2749,59 +2741,6 @@ onnxruntime-web/dist/esm/ort.min.js:
           "Check your connection and reload."
       );
     });
-
-  /* ---------- sample images (generated inline, no network) ---------- */
-  function makeSample(kind) {
-    const c = document.createElement("canvas");
-    c.width = c.height = 420;
-    const g = c.getContext("2d");
-
-    if (kind === 0) {
-      const bg = g.createLinearGradient(0, 0, 420, 420);
-      bg.addColorStop(0, "#ff9a6b"); bg.addColorStop(1, "#c94f7c");
-      g.fillStyle = bg; g.fillRect(0, 0, 420, 420);
-      g.fillStyle = "#3c2a4d";
-      g.beginPath(); g.arc(210, 150, 62, 0, Math.PI * 2); g.fill();
-      g.beginPath();
-      g.moveTo(210, 205);
-      g.bezierCurveTo(320, 225, 330, 420, 330, 420);
-      g.lineTo(90, 420);
-      g.bezierCurveTo(90, 420, 100, 225, 210, 205);
-      g.fill();
-    } else if (kind === 1) {
-      g.fillStyle = "#dfe9ee"; g.fillRect(0, 0, 420, 420);
-      g.fillStyle = "#cbd9e0"; g.fillRect(0, 300, 420, 120);
-      g.fillStyle = "#d94f3d";
-      g.beginPath(); g.ellipse(210, 230, 105, 88, 0, 0, Math.PI * 2); g.fill();
-      g.fillStyle = "#f2f5f7";
-      g.beginPath(); g.ellipse(180, 205, 34, 26, -0.4, 0, Math.PI * 2); g.fill();
-      g.strokeStyle = "#4a7a35"; g.lineWidth = 14; g.lineCap = "round";
-      g.beginPath(); g.moveTo(210, 148); g.quadraticCurveTo(240, 108, 285, 104); g.stroke();
-    } else {
-      const bg = g.createLinearGradient(0, 0, 0, 420);
-      bg.addColorStop(0, "#8fd3f4"); bg.addColorStop(1, "#d7f0dc");
-      g.fillStyle = bg; g.fillRect(0, 0, 420, 420);
-      g.fillStyle = "#2f5d3a";
-      g.beginPath(); g.moveTo(210, 60); g.lineTo(320, 300); g.lineTo(100, 300); g.closePath(); g.fill();
-      g.fillStyle = "#6b4a2f"; g.fillRect(192, 300, 36, 80);
-    }
-    return c;
-  }
-
-  ["Portrait", "Product", "Object"].forEach((label, i) => {
-    const canvas = makeSample(i);
-    const b = document.createElement("button");
-    b.title = label + " sample";
-    const img = document.createElement("img");
-    img.src = canvas.toDataURL("image/png");
-    b.appendChild(img);
-    b.addEventListener("click", () => {
-      canvas.toBlob((blob) => {
-        handleFile(new File([blob], `sample-${label.toLowerCase()}.png`, { type: "image/png" }));
-      }, "image/png");
-    });
-    el.samples.appendChild(b);
-  });
 
   /* ---------- input wiring ---------- */
   el.pick.addEventListener("click", () => el.file.click());
@@ -3000,6 +2939,26 @@ onnxruntime-web/dist/esm/ort.min.js:
     return { workingCanvas: pc, baseCanvas: oc };
   }
 
+  const FUN_PROCESSING_MESSAGES = [
+    "Beaming your background up to the mothership…",
+    "Aliens are politely disintegrating the background…",
+    "Convincing every pixel the background never existed…",
+    "Outsourcing this to a nearby black hole…",
+    "Bribing the background to leave quietly…",
+    "Summoning a tiny UFO to vacuum up the background…",
+    "Negotiating with gravity to let the background go…",
+    "Running this past mission control…",
+  ];
+  const FUN_REFINING_MESSAGES = [
+    "Giving the edges an alien-precision haircut…",
+    "Tidying up stray pixels with a tiny space broom…",
+    "Polishing the outline to interstellar standards…",
+    "Double-checking nothing got left behind on Mars…",
+  ];
+  function pickFun(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
   /* ---------- main flow ---------- */
   async function handleFile(file) {
     if (state.busy) return;
@@ -3029,7 +2988,8 @@ onnxruntime-web/dist/esm/ort.min.js:
     setSegActive("compare");
     render();
 
-    el.overlayText.textContent = "Removing background…";
+    const funMsg = pickFun(FUN_PROCESSING_MESSAGES);
+    el.overlayText.textContent = funMsg;
     el.overlaySub.textContent = state.firstRunDone
       ? "Usually a few seconds on CPU."
       : "First run loads the model — this one takes longer.";
@@ -3050,10 +3010,10 @@ onnxruntime-web/dist/esm/ort.min.js:
           // key looks like "fetch:/models/medium" or "compute:inference"
           if (key.startsWith("fetch") && total) {
             const pct = Math.round((current / total) * 100);
-            el.overlayText.textContent = `Downloading model… ${pct}%`;
+            el.overlayText.textContent = `Beaming down the alien tech… ${pct}%`;
             el.overlaySub.textContent = "One time only — your browser caches it.";
           } else {
-            el.overlayText.textContent = "Removing background…";
+            el.overlayText.textContent = funMsg;
             el.overlaySub.textContent = "Running the model on your machine.";
           }
         },
@@ -3081,7 +3041,7 @@ onnxruntime-web/dist/esm/ort.min.js:
       }
       if (lastErr) throw lastErr;
 
-      el.overlayText.textContent = "Refining edges…";
+      el.overlayText.textContent = pickFun(FUN_REFINING_MESSAGES);
       el.overlaySub.textContent = "Cleaning up the mask boundary.";
       const { workingCanvas, baseCanvas } = await refineMask(blob, file);
 
