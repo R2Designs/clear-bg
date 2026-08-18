@@ -602,14 +602,27 @@
   }
   .info-section p {
     color: var(--muted); font-size: 15px; line-height: 1.65; margin: 0;
+    text-align: center;
   }
   .info-section p a { color: var(--ink); }
-  .steps-list, .features-list {
+  .steps-list {
     color: var(--muted); font-size: 15px; line-height: 1.7;
     margin: 0; padding-left: 22px;
   }
-  .steps-list li, .features-list li { margin-bottom: 8px; }
-  .steps-list li:last-child, .features-list li:last-child { margin-bottom: 0; }
+  .features-list {
+    color: var(--muted); font-size: 15px; line-height: 1.7;
+    margin: 0; padding: 0; list-style: none; text-align: center;
+  }
+  .features-list li { margin-bottom: 8px; }
+  .features-list li:last-child { margin-bottom: 0; }
+  .steps-list li { margin-bottom: 8px; }
+  .steps-list li:last-child { margin-bottom: 0; }
+  .faq-sub { margin-top: 0; margin-bottom: 40px; }
+  .faq-sub h3 {
+    font-size: 17px; font-weight: 800; letter-spacing: -.02em;
+    text-align: center; margin: 0 0 14px;
+  }
+  footer a { color: var(--success); }
   .features-list b, .steps-list b { color: var(--ink); }
 
   /* ---------- FAQ ---------- */
@@ -759,7 +772,7 @@
 <body>
 
 <div class="announce-bar" id="announceBar">
-  <span>No signup&nbsp;&middot;&nbsp;No accounts&nbsp;&middot;&nbsp;No trial&nbsp;&middot;&nbsp;100% free, forever</span>
+  <span>No signup&nbsp;&middot;&nbsp;No account&nbsp;&middot;&nbsp;No watermark&nbsp;&middot;&nbsp;Completely free</span>
   <button class="announce-close" id="announceClose" aria-label="Dismiss">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
@@ -794,42 +807,44 @@
 
   <div class="error" id="error"></div>
 
-  <section class="info-section">
-    <h2>Free Background Remover</h2>
-    <p>Bg Free automatically removes the background from a photo — people, products, or objects — right in your browser. Upload a JPG, PNG, or WEBP file and get back a transparent PNG in a few seconds to a couple of minutes, depending on your device. There's no signup, no watermark, and no limit on how many images you process, because there's no server-side cost to recover: the image processing runs entirely on your own device.</p>
-  </section>
+  <div id="infoSections">
+    <section class="info-section">
+      <p>Bg Free automatically removes the background from a photo — people, products, or objects — right in your browser. Upload a JPG, PNG, or WEBP file and get back a transparent PNG in a few seconds to a couple of minutes, depending on your device. There's no signup, no watermark, and no limit on how many images you process, because there's no server-side cost to recover: the image processing runs entirely on your own device.</p>
+    </section>
 
-  <section class="info-section">
-    <h2>How It Works</h2>
-    <ol class="steps-list">
-      <li>Upload a photo, or drop one onto the page.</li>
-      <li>Bg Free removes the background locally in your browser.</li>
-      <li>Use the Magic Brush to erase or restore any edge by hand.</li>
-      <li>Swap in a solid color, your own background photo, or blur the backdrop.</li>
-      <li>Download the result as a transparent PNG.</li>
-    </ol>
-  </section>
-
-  <section class="info-section">
-    <h2>Features</h2>
-    <ul class="features-list">
-      <li><b>Automatic background removal</b> — powered by an on-device segmentation model.</li>
-      <li><b>Magic Brush</b> — erase or restore specific areas by hand, with edge-aware strokes.</li>
-      <li><b>Background replacement</b> — solid colors or your own uploaded photo.</li>
-      <li><b>Background blur</b> — a portrait-style blurred backdrop instead of a full swap.</li>
-      <li><b>Transparent PNG export</b> — download with a real alpha channel, no watermark.</li>
-      <li><b>Local processing</b> — your photo is never uploaded to a server.</li>
-      <li><b>No signup</b> — no account, login, or email required.</li>
-    </ul>
-  </section>
-
-  <section class="info-section">
-    <h2>Privacy &amp; Local Processing</h2>
-    <p>The photo you upload is processed entirely on your device using a machine learning model that runs in your browser via WebAssembly. It is not transmitted to a server, and Bg Free has no backend that could receive it. The only network request involved in processing an image is a one-time download of the model's own weight files (not your photo) from a content delivery network, the first time you use the tool — after that, your browser caches them. For the full picture, including how analytics and cookies are handled, see the <a href="privacy.html">Privacy Policy</a>.</p>
-  </section>
+    <section class="info-section">
+      <h2>Features</h2>
+      <ul class="features-list">
+        <li><b>Automatic background removal</b> — powered by an on-device segmentation model.</li>
+        <li><b>Magic Brush</b> — erase or restore specific areas by hand, with edge-aware strokes.</li>
+        <li><b>Background replacement</b> — solid colors or your own uploaded photo.</li>
+        <li><b>Background blur</b> — a portrait-style blurred backdrop instead of a full swap.</li>
+        <li><b>Transparent PNG export</b> — download with a real alpha channel, no watermark.</li>
+        <li><b>Local processing</b> — your photo is never uploaded to a server.</li>
+        <li><b>No signup</b> — no account, login, or email required.</li>
+      </ul>
+    </section>
+  </div>
 
   <section class="faq" id="faqSection">
     <h2>Frequently asked questions</h2>
+
+    <div class="info-section faq-sub">
+      <h3>How It Works</h3>
+      <ol class="steps-list">
+        <li>Upload a photo, or drop one onto the page.</li>
+        <li>Bg Free removes the background locally in your browser.</li>
+        <li>Use the Magic Brush to erase or restore any edge by hand.</li>
+        <li>Swap in a solid color, your own background photo, or blur the backdrop.</li>
+        <li>Download the result as a transparent PNG.</li>
+      </ol>
+    </div>
+
+    <div class="info-section faq-sub">
+      <h3>Privacy &amp; Local Processing</h3>
+      <p>The photo you upload is processed entirely on your device using a machine learning model that runs in your browser via WebAssembly. It is not transmitted to a server, and Bg Free has no backend that could receive it. The only network request involved in processing an image is a one-time download of the model's own weight files (not your photo) from a content delivery network, the first time you use the tool — after that, your browser caches them. For the full picture, including how analytics and cookies are handled, see the <a href="privacy.html">Privacy Policy</a>.</p>
+    </div>
+
     <div class="faq-list">
       <details>
         <summary>Is Bg Free really free?</summary>
@@ -2914,7 +2929,7 @@ onnxruntime-web/dist/esm/ort.min.js:
     dot: $("dot"), statusText: $("statusText"), modelName: $("modelName"),
     themeToggle: $("themeToggle"),
     announceBar: $("announceBar"), announceClose: $("announceClose"),
-    faqSection: $("faqSection"),
+    faqSection: $("faqSection"), infoSections: $("infoSections"),
     flipBtn: $("flipBtn"), undoBtn: $("undoBtn"), redoBtn: $("redoBtn"),
     brushTools: $("brushTools"), brushSize: $("brushSize"), magicBrushToggle: $("magicBrushToggle"),
     bgTabs: $("bgTabs"), bgPhoto: $("bgPhoto"),
@@ -3300,6 +3315,7 @@ onnxruntime-web/dist/esm/ort.min.js:
     el.hero.style.display = "none";
     el.drop.style.display = "none";
     el.faqSection.style.display = "none";
+    el.infoSections.style.display = "none";
     el.workspace.classList.add("on");
     el.fname.textContent = file.name;
     el.fmeta.textContent = `${(file.size / 1024).toFixed(0)} KB · processing…`;
@@ -3921,6 +3937,7 @@ onnxruntime-web/dist/esm/ort.min.js:
     el.hero.style.display = "";
     el.drop.style.display = "";
     el.faqSection.style.display = "";
+    el.infoSections.style.display = "";
     hideError();
     el.frame.innerHTML = "";
     window.scrollTo({ top: 0, behavior: "smooth" });
