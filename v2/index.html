@@ -206,6 +206,16 @@
     color: var(--ink);
   }
   .hero p { margin: 0; color: var(--muted); font-size: 16.5px; }
+  .demo-shot {
+    display: block;
+    width: 100%;
+    max-width: 620px;
+    height: auto;
+    margin: 32px auto 0;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 60px -20px rgba(0,0,0,.6);
+  }
 
   /* ---------- dropzone ---------- */
   .drop {
@@ -739,6 +749,7 @@
   <section class="hero" id="hero">
     <h1>Remove image backgrounds <em>automatically</em></h1>
     <p>Runs entirely in your browser. Your images never get uploaded anywhere.</p>
+    <img class="demo-shot" src="demo.png" alt="Before and after comparison of Clear BG removing a background from a landscape photo" width="1460" height="1094" />
   </section>
 
   <section class="drop" id="drop">
@@ -3134,6 +3145,26 @@ onnxruntime-web/dist/esm/ort.min.js:
     return new Promise((res) => canvas.toBlob(res, "image/png"));
   }
 
+  // Fraction of pixels the model kept as foreground (alpha > 50%). A model
+  // that found no salient subject returns an almost entirely transparent
+  // image — worth surfacing to the user instead of a silent blank result.
+  function measureKeptFraction(canvas) {
+    const ctx = canvas.getContext("2d");
+    const { width: W, height: H } = canvas;
+    // Sampling a grid instead of every pixel keeps this cheap on large photos.
+    const stepX = Math.max(1, Math.floor(W / 200));
+    const stepY = Math.max(1, Math.floor(H / 200));
+    let kept = 0, total = 0;
+    for (let y = 0; y < H; y += stepY) {
+      const row = ctx.getImageData(0, y, W, 1).data;
+      for (let x = 0; x < W; x += stepX) {
+        total++;
+        if (row[x * 4 + 3] > 128) kept++;
+      }
+    }
+    return total ? kept / total : 0;
+  }
+
   // Returns { workingCanvas, baseCanvas } — the editable result and a
   // same-size copy of the original photo (used for the Original view, as a
   // Magic Brush color guide, and to source pixels for Restore strokes).
@@ -3265,6 +3296,17 @@ onnxruntime-web/dist/esm/ort.min.js:
       el.overlayText.textContent = pickFun(FUN_REFINING_MESSAGES);
       el.overlaySub.textContent = "Cleaning up the mask boundary.";
       const { workingCanvas, baseCanvas } = await refineMask(blob, file);
+
+      const keptFraction = measureKeptFraction(workingCanvas);
+      if (keptFraction < 0.005) {
+        showError(
+          "Couldn't find a clear subject in this photo — the model didn't detect anything to keep, " +
+            "so the result would just be blank. This tool works best on photos with a person, product, " +
+            "or object set apart from its background; wide open scenery/landscape shots without a " +
+            "distinct subject sometimes don't have anything for it to isolate. Try a different photo, " +
+            "or use the Magic Brush's Restore tool to manually paint back what you want kept."
+        );
+      }
 
       state.workingCanvas = workingCanvas;
       state.baseCanvas = baseCanvas;
