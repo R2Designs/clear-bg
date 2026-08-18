@@ -122,8 +122,9 @@
     color: #1a1030;
     font-size: 12.5px;
     font-weight: 600;
-    letter-spacing: .01em;
+    letter-spacing: .03em;
     text-align: center;
+    text-transform: uppercase;
     position: relative;
   }
   .announce-bar.hidden { display: none; }
@@ -605,25 +606,14 @@
     text-align: center;
   }
   .info-section p a { color: var(--ink); }
-  .steps-list {
-    color: var(--muted); font-size: 15px; line-height: 1.7;
-    margin: 0; padding-left: 22px;
-  }
   .features-list {
     color: var(--muted); font-size: 15px; line-height: 1.7;
     margin: 0; padding: 0; list-style: none; text-align: center;
   }
   .features-list li { margin-bottom: 8px; }
   .features-list li:last-child { margin-bottom: 0; }
-  .steps-list li { margin-bottom: 8px; }
-  .steps-list li:last-child { margin-bottom: 0; }
-  .faq-sub { margin-top: 0; margin-bottom: 40px; }
-  .faq-sub h3 {
-    font-size: 17px; font-weight: 800; letter-spacing: -.02em;
-    text-align: center; margin: 0 0 14px;
-  }
+  .features-list b { color: var(--ink); }
   footer a { color: var(--success); }
-  .features-list b, .steps-list b { color: var(--ink); }
 
   /* ---------- FAQ ---------- */
   .faq { margin-top: 64px; max-width: 720px; margin-left: auto; margin-right: auto; }
@@ -695,6 +685,22 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does Bg Free work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Upload a photo, or drop one onto the page. Bg Free removes the background locally in your browser, then you can use the Magic Brush to erase or restore any edge by hand, swap in a solid color, your own background photo, or blur the backdrop, and download the result as a transparent PNG."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Bg Free handle privacy and local processing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The photo you upload is processed entirely on your device using a machine learning model that runs in your browser via WebAssembly. It is not transmitted to a server, and Bg Free has no backend that could receive it. The only network request involved in processing an image is a one-time download of the model's own weight files, not your photo, from a content delivery network, the first time you use the tool."
+      }
+    },
     {
       "@type": "Question",
       "name": "Is Bg Free really free?",
@@ -829,23 +835,15 @@
   <section class="faq" id="faqSection">
     <h2>Frequently asked questions</h2>
 
-    <div class="info-section faq-sub">
-      <h3>How It Works</h3>
-      <ol class="steps-list">
-        <li>Upload a photo, or drop one onto the page.</li>
-        <li>Bg Free removes the background locally in your browser.</li>
-        <li>Use the Magic Brush to erase or restore any edge by hand.</li>
-        <li>Swap in a solid color, your own background photo, or blur the backdrop.</li>
-        <li>Download the result as a transparent PNG.</li>
-      </ol>
-    </div>
-
-    <div class="info-section faq-sub">
-      <h3>Privacy &amp; Local Processing</h3>
-      <p>The photo you upload is processed entirely on your device using a machine learning model that runs in your browser via WebAssembly. It is not transmitted to a server, and Bg Free has no backend that could receive it. The only network request involved in processing an image is a one-time download of the model's own weight files (not your photo) from a content delivery network, the first time you use the tool — after that, your browser caches them. For the full picture, including how analytics and cookies are handled, see the <a href="privacy.html">Privacy Policy</a>.</p>
-    </div>
-
     <div class="faq-list">
+      <details>
+        <summary>How does Bg Free work?</summary>
+        <p>Upload a photo, or drop one onto the page. Bg Free removes the background locally in your browser, then you can use the Magic Brush to erase or restore any edge by hand, swap in a solid color, your own background photo, or blur the backdrop, and download the result as a transparent PNG.</p>
+      </details>
+      <details>
+        <summary>How does Bg Free handle privacy and local processing?</summary>
+        <p>The photo you upload is processed entirely on your device using a machine learning model that runs in your browser via WebAssembly. It is not transmitted to a server, and Bg Free has no backend that could receive it. The only network request involved in processing an image is a one-time download of the model's own weight files (not your photo) from a content delivery network, the first time you use the tool — after that, your browser caches them. For the full picture, including how analytics and cookies are handled, see the <a href="privacy.html">Privacy Policy</a>.</p>
+      </details>
       <details>
         <summary>Is Bg Free really free?</summary>
         <p>Yes — completely free, with no usage limits, no watermark, and no upgrade prompts. There's no paid tier because there's no server cost to cover: the background-removal model runs on your own device.</p>
