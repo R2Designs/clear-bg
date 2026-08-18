@@ -11,17 +11,52 @@
      404s harmlessly and the app runs single-threaded as before. -->
 <script src="coi-serviceworker.js"></script>
 <style>
+  /* Dark is the default theme (pure black, not a dark gray) — [data-theme="light"]
+     on <html> switches to the light palette. A blocking inline script in <head>
+     sets that attribute from localStorage before first paint, so there's no
+     flash of the wrong theme. */
   :root {
+    --bg: #000000;
+    --surface: #000000;
+    --surface-2: #0a0a0a;
+    --ink: #f2f2f2;
+    --muted: #9a9a9a;
+    --line: #2a2a2a;
+    --btn-bg: #f2f2f2;
+    --btn-bg-hover: #ffffff;
+    --btn-text: #0a0a0a;
+    --accent: #f2f2f2;
+    --success: #34d17c;
+    --danger: #ff6259;
+    --checker-a: #1c1c1c;
+    --checker-b: #0a0a0a;
+    --overlay-bg: rgba(0,0,0,.86);
+    --error-bg: #2a1214;
+    --error-border: #5c2027;
+    --error-ink: #ff8f87;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6);
+  }
+
+  html[data-theme="light"] {
     --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f4f7f9;
     --ink: #222222;
     --muted: #717171;
     --line: #dddddd;
+    --btn-bg: #222222;
+    --btn-bg-hover: #000000;
+    --btn-text: #ffffff;
     --accent: #222222;
-    --accent-2: #000000;
-    --accent-ink: #222222;
     --success: #00a86b;
     --danger: #c13515;
-    --radius: 12px;
+    --checker-a: #dfe6eb;
+    --checker-b: #ffffff;
+    --overlay-bg: rgba(255,255,255,.86);
+    --error-bg: #fdf3f5;
+    --error-border: #f4ccd4;
+    --error-ink: #8c2437;
     --shadow: 0 1px 2px rgba(0,0,0,.06), 0 12px 32px -12px rgba(0,0,0,.18);
   }
 
@@ -35,7 +70,27 @@
     color: var(--ink);
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
+    transition: background-color .18s, color .18s;
   }
+
+  .theme-toggle {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--ink);
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .theme-toggle svg { width: 15px; height: 15px; }
+  .theme-toggle .sun { display: none; }
+  html[data-theme="light"] .theme-toggle .moon { display: none; }
+  html[data-theme="light"] .theme-toggle .sun { display: block; }
 
   header {
     display: flex;
@@ -60,6 +115,7 @@
     width: 28px; height: 28px;
     border-radius: 8px;
     background: #222222;
+    border: 1px solid var(--line);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -73,7 +129,7 @@
     border: 1px solid var(--line);
     padding: 3px 8px;
     border-radius: 999px;
-    background: #fff;
+    background: var(--surface-2);
   }
 
   .status {
@@ -110,9 +166,9 @@
   /* ---------- dropzone ---------- */
   .drop {
     position: relative;
-    border: 2px dashed #cfdbe4;
+    border: 2px dashed var(--line);
     border-radius: 22px;
-    background: rgba(255,255,255,.72);
+    background: var(--surface-2);
     backdrop-filter: blur(6px);
     padding: 52px 28px;
     text-align: center;
@@ -121,7 +177,6 @@
   }
   .drop.over {
     border-color: var(--accent);
-    background: #fafafa;
     transform: translateY(-2px);
   }
 
@@ -133,28 +188,28 @@
     font-weight: 650;
     border-radius: 999px;
     padding: 15px 34px;
-    color: #fff;
-    background: #222222;
+    color: var(--btn-text);
+    background: var(--btn-bg);
     box-shadow: 0 6px 16px -8px rgba(0,0,0,.5);
     transition: transform .14s, box-shadow .14s, background-color .14s;
     font-size: 16px;
   }
-  .btn:hover { transform: translateY(-1px); background-color: #000000; box-shadow: 0 8px 20px -8px rgba(0,0,0,.55); }
+  .btn:hover { transform: translateY(-1px); background-color: var(--btn-bg-hover); box-shadow: 0 8px 20px -8px rgba(0,0,0,.55); }
   .btn:active { transform: translateY(0); }
   .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 
   .btn.ghost {
-    background: #fff;
+    background: var(--surface);
     color: var(--ink);
     border: 1px solid var(--line);
     box-shadow: none;
     padding: 13px 22px;
     font-size: 14.5px;
   }
-  .btn.ghost:hover { border-color: #c2ced8; background: #fbfdfe; }
+  .btn.ghost:hover { border-color: var(--muted); background: var(--surface-2); }
 
   .hint { margin-top: 14px; font-size: 13px; color: var(--muted); }
-  .hint b { color: #3d5364; font-weight: 600; }
+  .hint b { color: var(--ink); font-weight: 600; }
 
   .samples {
     margin-top: 26px;
@@ -173,7 +228,7 @@
     padding: 0;
     overflow: hidden;
     cursor: pointer;
-    background: #f4f7f9;
+    background: var(--surface-2);
     transition: transform .14s, border-color .14s;
   }
   .samples button:hover { transform: translateY(-2px); border-color: var(--accent); }
@@ -185,7 +240,7 @@
 
   .stage {
     border-radius: 20px;
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--line);
     box-shadow: var(--shadow);
     overflow: hidden;
@@ -213,7 +268,7 @@
 
   .seg {
     display: inline-flex;
-    background: #f1f5f8;
+    background: var(--surface-2);
     border-radius: 999px;
     padding: 3px;
     gap: 2px;
@@ -225,11 +280,11 @@
     padding: 7px 14px; border-radius: 999px;
     transition: background .14s, color .14s;
   }
-  .seg button.active { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(20,32,43,.12); }
+  .seg button.active { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
 
   .canvas-wrap {
     position: relative;
-    background: #f7f9fb;
+    background: var(--surface-2);
     display: grid;
     place-items: center;
     min-height: 340px;
@@ -245,20 +300,21 @@
     user-select: none;
     box-shadow: 0 8px 30px -14px rgba(20,32,43,.35);
   }
-  .frame img {
+  .frame img, .frame canvas {
     display: block;
     max-width: 100%;
     max-height: 62vh;
     width: auto;
   }
+  .frame.painting canvas { cursor: crosshair; }
 
   .checker {
     background-image:
-      linear-gradient(45deg, #dfe6eb 25%, transparent 25%, transparent 75%, #dfe6eb 75%),
-      linear-gradient(45deg, #dfe6eb 25%, transparent 25%, transparent 75%, #dfe6eb 75%);
+      linear-gradient(45deg, var(--checker-a) 25%, transparent 25%, transparent 75%, var(--checker-a) 75%),
+      linear-gradient(45deg, var(--checker-a) 25%, transparent 25%, transparent 75%, var(--checker-a) 75%);
     background-size: 18px 18px;
     background-position: 0 0, 9px 9px;
-    background-color: #fff;
+    background-color: var(--checker-b);
   }
 
   /* slider compare */
@@ -267,14 +323,14 @@
     inset: 0;
     overflow: hidden;
   }
-  .cmp .after-layer img { position: absolute; top: 0; left: 0; height: 100%; width: auto; max-height: none; max-width: none; }
+  .cmp .after-layer img, .cmp .after-layer canvas { position: absolute; top: 0; left: 0; height: 100%; width: auto; max-height: none; max-width: none; }
 
   .handle {
     position: absolute;
     top: 0; bottom: 0;
     width: 3px;
-    background: #fff;
-    box-shadow: 0 0 0 1px rgba(20,32,43,.18), 0 0 18px rgba(0,0,0,.28);
+    background: var(--surface);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.3), 0 0 18px rgba(0,0,0,.35);
     cursor: ew-resize;
     z-index: 3;
   }
@@ -285,8 +341,8 @@
     transform: translate(-50%,-50%);
     width: 38px; height: 38px;
     border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 3px 12px rgba(20,32,43,.3);
+    background: var(--surface);
+    box-shadow: 0 3px 12px rgba(0,0,0,.4);
   }
   .handle svg {
     position: absolute;
@@ -326,20 +382,20 @@
   .swatch {
     width: 28px; height: 28px;
     border-radius: 8px;
-    border: 1px solid rgba(20,32,43,.14);
+    border: 1px solid var(--line);
     cursor: pointer;
     padding: 0;
     transition: transform .12s, box-shadow .12s;
   }
   .swatch:hover { transform: translateY(-1px); }
-  .swatch.sel { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--accent); }
+  .swatch.sel { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); }
   .swatch.transparent {
     background-image:
-      linear-gradient(45deg, #dfe6eb 25%, transparent 25%, transparent 75%, #dfe6eb 75%),
-      linear-gradient(45deg, #dfe6eb 25%, transparent 25%, transparent 75%, #dfe6eb 75%);
+      linear-gradient(45deg, var(--checker-a) 25%, transparent 25%, transparent 75%, var(--checker-a) 75%),
+      linear-gradient(45deg, var(--checker-a) 25%, transparent 25%, transparent 75%, var(--checker-a) 75%);
     background-size: 10px 10px;
     background-position: 0 0, 5px 5px;
-    background-color: #fff;
+    background-color: var(--checker-b);
   }
 
   .stage-bottom {
@@ -349,7 +405,7 @@
     gap: 10px;
     padding: 14px 16px;
     border-top: 1px solid var(--line);
-    background: #fcfdfe;
+    background: var(--surface-2);
     flex-wrap: wrap;
   }
 
@@ -357,7 +413,7 @@
   .overlay {
     position: absolute;
     inset: 0;
-    background: rgba(255,255,255,.86);
+    background: var(--overlay-bg);
     backdrop-filter: blur(3px);
     display: none;
     place-items: center;
@@ -368,7 +424,7 @@
   .spinner {
     width: 40px; height: 40px;
     border-radius: 50%;
-    border: 3px solid #dce6ec;
+    border: 3px solid var(--line);
     border-top-color: var(--accent);
     animation: spin .8s linear infinite;
     margin: 0 auto 14px;
@@ -380,9 +436,9 @@
   .error {
     display: none;
     margin: 16px 0 0;
-    border: 1px solid #f4ccd4;
-    background: #fdf3f5;
-    color: #8c2437;
+    border: 1px solid var(--error-border);
+    background: var(--error-bg);
+    color: var(--error-ink);
     padding: 12px 14px;
     border-radius: 12px;
     font-size: 13.5px;
@@ -396,11 +452,91 @@
     padding: 0 28px 40px;
   }
   footer code {
-    background: #f1f5f8;
+    background: var(--surface-2);
     padding: 2px 6px;
     border-radius: 5px;
     font-size: 12px;
   }
+
+  /* ---------- toolbar (flip / undo / redo) ---------- */
+  .toolbar { display: flex; align-items: center; gap: 4px; }
+  .toolbar-sep { width: 1px; height: 20px; background: var(--line); margin: 0 4px; }
+  .icon-btn {
+    appearance: none; border: 1px solid var(--line); background: var(--surface-2);
+    color: var(--ink); width: 32px; height: 32px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0; transition: border-color .12s, background .12s;
+  }
+  .icon-btn:hover { border-color: var(--muted); }
+  .icon-btn:disabled { opacity: .35; cursor: not-allowed; }
+  .icon-btn svg { width: 16px; height: 16px; }
+
+  /* ---------- edit panel (magic brush + background) ---------- */
+  .edit-panel { border-top: 1px solid var(--line); }
+  .panel-card { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  .panel-title {
+    font-size: 12px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .04em; margin-bottom: 10px;
+  }
+
+  .tool-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tool-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); font: inherit; font-weight: 600;
+    font-size: 13.5px; cursor: pointer; transition: border-color .12s, color .12s, background .12s;
+  }
+  .tool-btn svg { width: 16px; height: 16px; }
+  .tool-btn.active { border-color: var(--ink); background: var(--surface-2); }
+
+  .field-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .field-label { font-size: 12.5px; color: var(--muted); font-weight: 600; min-width: 82px; flex-shrink: 0; }
+
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none; flex: 1; height: 4px;
+    background: var(--line); border-radius: 999px; outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--ink); cursor: pointer; border: 2px solid var(--surface);
+    box-shadow: 0 1px 3px rgba(0,0,0,.4);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%; background: var(--ink);
+    cursor: pointer; border: 2px solid var(--surface);
+  }
+
+  .switch-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; font-size: 13.5px; font-weight: 600; cursor: pointer;
+  }
+  .switch { position: relative; display: inline-block; width: 38px; height: 22px; flex-shrink: 0; }
+  .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .switch-track { position: absolute; inset: 0; background: var(--line); border-radius: 999px; transition: background-color .15s; }
+  .switch-track::after {
+    content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px;
+    background: #fff; border-radius: 50%; transition: transform .15s;
+  }
+  .switch input:checked + .switch-track { background: var(--success); }
+  .switch input:checked + .switch-track::after { transform: translateX(16px); }
+
+  .tabs { display: inline-flex; background: var(--surface-2); border-radius: 999px; padding: 3px; gap: 2px; margin-bottom: 12px; }
+  .tab-btn {
+    border: 0; background: transparent; cursor: pointer; font: inherit; font-size: 13px;
+    font-weight: 600; color: var(--muted); padding: 7px 16px; border-radius: 999px;
+    transition: background .14s, color .14s;
+  }
+  .tab-btn.active { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+
+  .bg-photo { margin-bottom: 12px; }
+  .preset-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 10px; }
+  .preset-grid button {
+    border-radius: 8px; border: 1px solid var(--line); padding: 0; overflow: hidden;
+    cursor: pointer; aspect-ratio: 1; background: var(--surface-2); transition: transform .12s, box-shadow .12s;
+  }
+  .preset-grid button:hover { transform: translateY(-1px); }
+  .preset-grid button.sel { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); }
+  .preset-grid canvas { width: 100%; height: 100%; display: block; }
 
   @media (max-width: 620px) {
     header, main { padding-left: 16px; padding-right: 16px; }
@@ -409,6 +545,14 @@
     .stage-bottom .btn { flex: 1; }
   }
 </style>
+<script>
+  // Runs before body paint so there's no flash of the wrong theme.
+  try {
+    if (localStorage.getItem("clearbg-theme") === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  } catch (e) {}
+</script>
 </head>
 <body>
 
@@ -419,6 +563,10 @@
   </div>
   <div class="status" id="status">
     <span class="dot" id="dot"></span><span id="statusText">checking engine…</span>
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle light/dark theme">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
   </div>
 </header>
 
@@ -447,6 +595,18 @@
           <div class="filename" id="fname">image.png</div>
           <div class="meta" id="fmeta">—</div>
         </div>
+        <div class="toolbar">
+          <button class="icon-btn" id="flipBtn" title="Flip horizontal" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M18 8l3 4-3 4"/><path d="M6 8l-3 4 3 4"/></svg>
+          </button>
+          <span class="toolbar-sep"></span>
+          <button class="icon-btn" id="undoBtn" title="Undo" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+          </button>
+          <button class="icon-btn" id="redoBtn" title="Redo" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>
+          </button>
+        </div>
         <div class="seg" id="viewSeg">
           <button data-view="compare" class="active">Compare</button>
           <button data-view="result">Result</button>
@@ -465,15 +625,61 @@
         </div>
       </div>
 
-      <div class="bgbar" id="bgbar">
-        <span class="label">Background</span>
-        <button class="swatch transparent sel" data-bg="transparent" title="Transparent"></button>
-        <button class="swatch" data-bg="#ffffff" style="background:#ffffff" title="White"></button>
-        <button class="swatch" data-bg="#14202b" style="background:#14202b" title="Charcoal"></button>
-        <button class="swatch" data-bg="#2ac1a0" style="background:#2ac1a0" title="Teal"></button>
-        <button class="swatch" data-bg="#f4c9d6" style="background:#f4c9d6" title="Blush"></button>
-        <button class="swatch" data-bg="#1aa3c9" style="background:#1aa3c9" title="Blue"></button>
-        <button class="swatch" data-bg="#f5e6c8" style="background:#f5e6c8" title="Sand"></button>
+      <div class="edit-panel">
+        <div class="panel-card">
+          <div class="panel-title">Magic Brush</div>
+          <div class="tool-toggle" id="brushTools">
+            <button class="tool-btn" data-tool="erase">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              Erase
+            </button>
+            <button class="tool-btn" data-tool="restore">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              Restore
+            </button>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Brush Size</span>
+            <input type="range" id="brushSize" min="8" max="150" value="40" />
+          </div>
+          <label class="switch-row">
+            <span>Magic Brush</span>
+            <span class="switch"><input type="checkbox" id="magicBrushToggle" checked /><span class="switch-track"></span></span>
+          </label>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-title">Background</div>
+          <div class="tabs" id="bgTabs">
+            <button class="tab-btn active" data-tab="color">Color</button>
+            <button class="tab-btn" data-tab="photo">Photo</button>
+          </div>
+
+          <div class="bgbar" id="bgbar" data-tabpanel="color">
+            <button class="swatch transparent sel" data-bg="transparent" title="Transparent"></button>
+            <button class="swatch" data-bg="#ffffff" style="background:#ffffff" title="White"></button>
+            <button class="swatch" data-bg="#14202b" style="background:#14202b" title="Charcoal"></button>
+            <button class="swatch" data-bg="#2ac1a0" style="background:#2ac1a0" title="Teal"></button>
+            <button class="swatch" data-bg="#f4c9d6" style="background:#f4c9d6" title="Blush"></button>
+            <button class="swatch" data-bg="#1aa3c9" style="background:#1aa3c9" title="Blue"></button>
+            <button class="swatch" data-bg="#f5e6c8" style="background:#f5e6c8" title="Sand"></button>
+          </div>
+
+          <div class="bg-photo" id="bgPhoto" data-tabpanel="photo" hidden>
+            <button class="btn ghost" id="uploadBgBtn">Upload background</button>
+            <input type="file" id="bgPhotoFile" accept="image/*" hidden />
+            <div class="preset-grid" id="presetGrid"></div>
+          </div>
+
+          <label class="switch-row">
+            <span>Blur background</span>
+            <span class="switch"><input type="checkbox" id="blurToggle" /><span class="switch-track"></span></span>
+          </label>
+          <div class="field-row" id="blurAmountRow" style="margin-top:12px; display:none;">
+            <span class="field-label">Blur amount</span>
+            <input type="range" id="blurAmount" min="2" max="30" value="12" />
+          </div>
+        </div>
       </div>
 
       <div class="stage-bottom">
@@ -2428,19 +2634,96 @@ onnxruntime-web/dist/esm/ort.min.js:
     viewSeg: $("viewSeg"), bgbar: $("bgbar"),
     download: $("download"), reset: $("reset"),
     dot: $("dot"), statusText: $("statusText"), modelName: $("modelName"),
-    samples: $("samples"),
+    samples: $("samples"), themeToggle: $("themeToggle"),
+    flipBtn: $("flipBtn"), undoBtn: $("undoBtn"), redoBtn: $("redoBtn"),
+    brushTools: $("brushTools"), brushSize: $("brushSize"), magicBrushToggle: $("magicBrushToggle"),
+    bgTabs: $("bgTabs"), bgPhoto: $("bgPhoto"),
+    uploadBgBtn: $("uploadBgBtn"), bgPhotoFile: $("bgPhotoFile"), presetGrid: $("presetGrid"),
+    blurToggle: $("blurToggle"), blurAmountRow: $("blurAmountRow"), blurAmount: $("blurAmount"),
   };
+
+  /* ---------- theme ---------- */
+  el.themeToggle.addEventListener("click", () => {
+    const isLight = document.documentElement.getAttribute("data-theme") === "light";
+    if (isLight) {
+      document.documentElement.removeAttribute("data-theme");
+      try { localStorage.setItem("clearbg-theme", "dark"); } catch (e) {}
+    } else {
+      document.documentElement.setAttribute("data-theme", "light");
+      try { localStorage.setItem("clearbg-theme", "light"); } catch (e) {}
+    }
+  });
 
   const state = {
     view: "compare",
     bg: "transparent",
+    bgTab: "color",
+    bgPhotoImg: null,
+    blurEnabled: false,
+    blurAmount: 12,
     originalUrl: null,
-    resultUrl: null,
-    resultBlob: null,
+    workingCanvas: null,
+    baseCanvas: null,
+    flipped: false,
+    tool: null,          // null | "erase" | "restore"
+    brushSize: 40,
+    magicBrush: true,
+    history: [],
+    historyIndex: -1,
     name: "image",
     firstRunDone: false,
     busy: false,
   };
+  const MAX_HISTORY = 15;
+
+  function pushHistory() {
+    state.history = state.history.slice(0, state.historyIndex + 1);
+    state.history.push({
+      bitmap: canvasFromBitmap(state.workingCanvas), // cheap clone via canvas, not a live reference
+      flipped: state.flipped,
+      bg: state.bg,
+      bgTab: state.bgTab,
+      blurEnabled: state.blurEnabled,
+      blurAmount: state.blurAmount,
+    });
+    if (state.history.length > MAX_HISTORY) state.history.shift();
+    state.historyIndex = state.history.length - 1;
+  }
+
+  function restoreHistory(entry) {
+    const ctx = state.workingCanvas.getContext("2d");
+    ctx.clearRect(0, 0, state.workingCanvas.width, state.workingCanvas.height);
+    ctx.drawImage(entry.bitmap, 0, 0);
+    state.flipped = entry.flipped;
+    state.bg = entry.bg;
+    state.bgTab = entry.bgTab;
+    state.blurEnabled = entry.blurEnabled;
+    state.blurAmount = entry.blurAmount;
+  }
+
+  function undo() {
+    if (state.historyIndex <= 0) return;
+    state.historyIndex--;
+    restoreHistory(state.history[state.historyIndex]);
+    syncControlsFromState();
+    updateHistoryButtons();
+    render();
+  }
+
+  function redo() {
+    if (state.historyIndex >= state.history.length - 1) return;
+    state.historyIndex++;
+    restoreHistory(state.history[state.historyIndex]);
+    syncControlsFromState();
+    updateHistoryButtons();
+    render();
+  }
+
+  function updateHistoryButtons() {
+    if (!el.undoBtn) return;
+    el.undoBtn.disabled = state.historyIndex <= 0;
+    el.redoBtn.disabled = state.historyIndex >= state.history.length - 1;
+  }
 
   /* ---------- engine status ---------- */
   el.statusText.textContent = "loading engine…";
@@ -2681,6 +2964,20 @@ onnxruntime-web/dist/esm/ort.min.js:
     return new ImageData(out, W, H);
   }
 
+  function canvasFromBitmap(bmp, w, h) {
+    const c = document.createElement("canvas");
+    c.width = w ?? bmp.width; c.height = h ?? bmp.height;
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    return c;
+  }
+
+  function exportCanvas(canvas) {
+    return new Promise((res) => canvas.toBlob(res, "image/png"));
+  }
+
+  // Returns { workingCanvas, baseCanvas } — the editable result and a
+  // same-size copy of the original photo (used for the Original view, as a
+  // Magic Brush color guide, and to source pixels for Restore strokes).
   async function refineMask(blob, origFile) {
     const [predBmp, origBmp] = await Promise.all([
       createImageBitmap(blob),
@@ -2688,24 +2985,19 @@ onnxruntime-web/dist/esm/ort.min.js:
     ]);
     const W = predBmp.width, H = predBmp.height;
 
-    const pc = document.createElement("canvas");
-    pc.width = W; pc.height = H;
+    const pc = canvasFromBitmap(predBmp);
     const pctx = pc.getContext("2d");
-    pctx.drawImage(predBmp, 0, 0);
     let predData = pctx.getImageData(0, 0, W, H);
 
-    const oc = document.createElement("canvas");
-    oc.width = W; oc.height = H;
-    const octx = oc.getContext("2d");
-    octx.drawImage(origBmp, 0, 0, W, H);
-    const origData = octx.getImageData(0, 0, W, H);
+    const oc = canvasFromBitmap(origBmp, W, H);
+    const origData = oc.getContext("2d").getImageData(0, 0, W, H);
 
     predData = edgeSmoothAlpha(predData, W, H);
     predData = guidedSnapAlpha(predData, origData, W, H);
     predData = fillInteriorDips(predData, W, H);
 
     pctx.putImageData(predData, 0, 0);
-    return await new Promise((res) => pc.toBlob(res, "image/png"));
+    return { workingCanvas: pc, baseCanvas: oc };
   }
 
   /* ---------- main flow ---------- */
@@ -2723,10 +3015,9 @@ onnxruntime-web/dist/esm/ort.min.js:
     state.name = file.name.replace(/\.[^.]+$/, "") || "image";
 
     if (state.originalUrl) URL.revokeObjectURL(state.originalUrl);
-    if (state.resultUrl) URL.revokeObjectURL(state.resultUrl);
     state.originalUrl = URL.createObjectURL(file);
-    state.resultUrl = null;
-    state.resultBlob = null;
+    state.workingCanvas = null;
+    state.baseCanvas = null;
 
     el.hero.style.display = "none";
     el.drop.style.display = "none";
@@ -2792,15 +3083,23 @@ onnxruntime-web/dist/esm/ort.min.js:
 
       el.overlayText.textContent = "Refining edges…";
       el.overlaySub.textContent = "Cleaning up the mask boundary.";
-      const refinedBlob = await refineMask(blob, file);
+      const { workingCanvas, baseCanvas } = await refineMask(blob, file);
 
-      state.resultBlob = refinedBlob;
-      state.resultUrl = URL.createObjectURL(refinedBlob);
+      state.workingCanvas = workingCanvas;
+      state.baseCanvas = baseCanvas;
+      state.flipped = false;
+      state.tool = null;
+      state.history = [];
+      state.historyIndex = -1;
+      pushHistory();
       state.firstRunDone = true;
+      [...el.brushTools.children].forEach((btn) => btn.classList.remove("active"));
+      syncControlsFromState();
 
       const secs = ((performance.now() - t0) / 1000).toFixed(2);
       el.fmeta.textContent = `${(file.size / 1024).toFixed(0)} KB · done in ${secs}s`;
       el.download.disabled = false;
+      updateHistoryButtons();
       render();
     } catch (err) {
       showError(
@@ -2815,46 +3114,106 @@ onnxruntime-web/dist/esm/ort.min.js:
   }
 
   /* ---------- rendering ---------- */
+  function drawCover(ctx, img, W, H) {
+    const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    const scale = Math.max(W / iw, H / ih);
+    const sw = iw * scale, sh = ih * scale;
+    ctx.drawImage(img, (W - sw) / 2, (H - sh) / 2, sw, sh);
+  }
+
+  // A background needing real pixel compositing (photo image, or blur of
+  // either the photo or the original shot — the classic "portrait mode"
+  // effect). Solid colors and plain transparency are cheaper handled by
+  // CSS in applyBg(), so this returns null for those.
+  function buildBackgroundLayer(W, H) {
+    if (state.blurEnabled) {
+      const src = state.bgTab === "photo" && state.bgPhotoImg ? state.bgPhotoImg : state.baseCanvas;
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const ctx = c.getContext("2d");
+      ctx.filter = `blur(${state.blurAmount}px)`;
+      drawCover(ctx, src, W, H);
+      ctx.filter = "none";
+      return c;
+    }
+    if (state.bg === "photo" && state.bgPhotoImg) {
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      drawCover(c.getContext("2d"), state.bgPhotoImg, W, H);
+      return c;
+    }
+    return null;
+  }
+
   function render() {
     const f = el.frame;
     f.innerHTML = "";
     f.className = "frame";
     f.style.background = "";
+    const flip = state.flipped ? "scaleX(-1)" : "";
 
-    if (!state.resultUrl) {
+    if (!state.workingCanvas) {
+      state.paintCanvas = null;
       const img = new Image();
       img.src = state.originalUrl;
+      img.style.transform = flip;
       f.appendChild(img);
       return;
     }
 
     if (state.view === "original") {
-      const img = new Image();
-      img.src = state.originalUrl;
-      f.appendChild(img);
+      state.paintCanvas = null;
+      state.baseCanvas.style.transform = flip;
+      f.appendChild(state.baseCanvas);
       return;
     }
 
     if (state.view === "result") {
-      applyBg(f);
-      const img = new Image();
-      img.src = state.resultUrl;
-      f.appendChild(img);
+      const W = state.workingCanvas.width, H = state.workingCanvas.height;
+      const bgLayer = buildBackgroundLayer(W, H);
+      let shown;
+      if (bgLayer) {
+        shown = document.createElement("canvas");
+        shown.width = W; shown.height = H;
+        const ctx = shown.getContext("2d");
+        ctx.drawImage(bgLayer, 0, 0);
+        ctx.drawImage(state.workingCanvas, 0, 0);
+      } else {
+        applyBg(f);
+        shown = state.workingCanvas;
+      }
+      shown.style.transform = flip;
+      f.appendChild(shown);
+      state.paintCanvas = shown;
+      state.paintBgLayer = bgLayer;
+      updateBrushCursor();
       return;
     }
 
     // compare
+    state.paintCanvas = null;
     f.classList.add("cmp");
-    const base = new Image();
-    base.src = state.originalUrl;
+    const base = state.baseCanvas;
+    base.style.transform = flip;
     f.appendChild(base);
 
     const layer = document.createElement("div");
     layer.className = "after-layer";
-    applyBg(layer);
-    const top = new Image();
-    top.src = state.resultUrl;
-    layer.appendChild(top);
+    const cmpW = state.workingCanvas.width, cmpH = state.workingCanvas.height;
+    const cmpBgLayer = buildBackgroundLayer(cmpW, cmpH);
+    let topEl;
+    if (cmpBgLayer) {
+      topEl = document.createElement("canvas");
+      topEl.width = cmpW; topEl.height = cmpH;
+      const ctx = topEl.getContext("2d");
+      ctx.drawImage(cmpBgLayer, 0, 0);
+      ctx.drawImage(state.workingCanvas, 0, 0);
+    } else {
+      applyBg(layer);
+      topEl = state.workingCanvas;
+    }
+    topEl.style.transform = flip;
+    layer.appendChild(topEl);
     f.appendChild(layer);
 
     // The clipped overlay sits on the LEFT, so left = result, right = original.
@@ -2878,7 +3237,7 @@ onnxruntime-web/dist/esm/ort.min.js:
     const place = () => {
       layer.style.width = pct + "%";
       handle.style.left = `calc(${pct}% - 1.5px)`;
-      top.style.width = f.clientWidth + "px";
+      topEl.style.width = f.clientWidth + "px";
     };
 
     const move = (clientX) => {
@@ -2905,9 +3264,7 @@ onnxruntime-web/dist/esm/ort.min.js:
     window.addEventListener("mouseup", up);
     window.addEventListener("touchend", up);
 
-    if (base.complete) place();
-    else base.addEventListener("load", place);
-    top.addEventListener("load", place);
+    place(); // canvases are already painted synchronously — no load event to wait for
     window.addEventListener("resize", place);
   }
 
@@ -2915,11 +3272,132 @@ onnxruntime-web/dist/esm/ort.min.js:
     if (state.bg === "transparent") {
       node.classList.add("checker");
       node.style.background = "";
+    } else if (state.bg === "photo") {
+      node.classList.remove("checker");
+      node.style.background = "";
     } else {
       node.classList.remove("checker");
       node.style.background = state.bg;
     }
   }
+
+  /* ---------- magic brush ----------
+     Erase pushes alpha toward 0; Restore pushes it back toward 255 using
+     the untouched original pixel (RGB survives under the mask regardless
+     of alpha, but Restore also needs it back at full strength). With Magic
+     Brush on, the stroke is weighted by color similarity to the point you
+     clicked — so a soft circular brush still respects a real object edge
+     instead of cutting a hard, uniform circle through it.
+  ------------------------------------------------------------------ */
+  function applyBrush(cx, cy, r) {
+    const canvas = state.workingCanvas;
+    const W = canvas.width, H = canvas.height;
+    const x0 = Math.max(0, Math.floor(cx - r)), x1 = Math.min(W, Math.ceil(cx + r));
+    const y0 = Math.max(0, Math.floor(cy - r)), y1 = Math.min(H, Math.ceil(cy + r));
+    if (x1 <= x0 || y1 <= y0) return;
+    const bw = x1 - x0, bh = y1 - y0;
+
+    const ctx = canvas.getContext("2d");
+    const data = ctx.getImageData(x0, y0, bw, bh);
+    const baseData = state.tool === "restore"
+      ? state.baseCanvas.getContext("2d").getImageData(x0, y0, bw, bh)
+      : null;
+
+    const cxi = Math.min(bw - 1, Math.max(0, Math.round(cx) - x0));
+    const cyi = Math.min(bh - 1, Math.max(0, Math.round(cy) - y0));
+    const guideSrc = baseData || data;
+    const gi = (cyi * bw + cxi) * 4;
+    const guideR = guideSrc.data[gi], guideG = guideSrc.data[gi + 1], guideB = guideSrc.data[gi + 2];
+
+    for (let y = 0; y < bh; y++) {
+      for (let x = 0; x < bw; x++) {
+        const dx = (x0 + x) - cx, dy = (y0 + y) - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > r) continue;
+        let weight = 1 - dist / r;
+
+        const i = (y * bw + x) * 4;
+        if (state.magicBrush) {
+          const cmp = baseData || data;
+          const dr = cmp.data[i] - guideR, dg = cmp.data[i + 1] - guideG, db = cmp.data[i + 2] - guideB;
+          const colorDist = Math.sqrt(dr * dr + dg * dg + db * db);
+          weight *= Math.exp(-(colorDist * colorDist) / (2 * 40 * 40));
+        }
+        if (weight <= 0.002) continue;
+
+        if (state.tool === "erase") {
+          data.data[i + 3] = Math.round(data.data[i + 3] * (1 - weight));
+        } else {
+          data.data[i + 3] = Math.round(data.data[i + 3] + (255 - data.data[i + 3]) * weight);
+          if (baseData) {
+            data.data[i]     += (baseData.data[i]     - data.data[i])     * weight;
+            data.data[i + 1] += (baseData.data[i + 1] - data.data[i + 1]) * weight;
+            data.data[i + 2] += (baseData.data[i + 2] - data.data[i + 2]) * weight;
+          }
+        }
+      }
+    }
+    ctx.putImageData(data, x0, y0);
+  }
+
+  function updateBrushCursor() {
+    el.frame.classList.toggle("painting", !!state.tool && !!state.paintCanvas);
+  }
+
+  // Attached once, globally — render() just keeps state.paintCanvas /
+  // state.paintBgLayer pointed at whatever is currently on screen, so this
+  // never has to be re-wired per render and never stacks duplicate listeners.
+  function initBrushInteraction() {
+    let painting = false, dirty = false;
+
+    const getPos = (e) => {
+      const evt = e.touches ? e.touches[0] : e;
+      const rect = state.paintCanvas.getBoundingClientRect();
+      const scale = state.workingCanvas.width / rect.width;
+      let x = (evt.clientX - rect.left) * scale;
+      const y = (evt.clientY - rect.top) * scale;
+      if (state.flipped) x = state.workingCanvas.width - x;
+      return { x, y, scale };
+    };
+
+    const refreshDisplay = () => {
+      if (state.paintCanvas === state.workingCanvas) return;
+      const ctx = state.paintCanvas.getContext("2d");
+      ctx.clearRect(0, 0, state.paintCanvas.width, state.paintCanvas.height);
+      if (state.paintBgLayer) ctx.drawImage(state.paintBgLayer, 0, 0);
+      ctx.drawImage(state.workingCanvas, 0, 0);
+    };
+
+    const stroke = (e) => {
+      const { x, y, scale } = getPos(e);
+      applyBrush(x, y, state.brushSize * scale);
+      dirty = true;
+      refreshDisplay();
+    };
+
+    el.frame.addEventListener("mousedown", (e) => {
+      if (!state.tool || !state.paintCanvas || e.target !== state.paintCanvas) return;
+      painting = true;
+      stroke(e);
+      e.preventDefault();
+    });
+    el.frame.addEventListener("touchstart", (e) => {
+      if (!state.tool || !state.paintCanvas || e.target !== state.paintCanvas) return;
+      painting = true;
+      stroke(e);
+      e.preventDefault();
+    }, { passive: false });
+    window.addEventListener("mousemove", (e) => { if (painting) stroke(e); });
+    window.addEventListener("touchmove", (e) => { if (painting) { stroke(e); e.preventDefault(); } }, { passive: false });
+    const endStroke = () => {
+      if (!painting) return;
+      painting = false;
+      if (dirty) { pushHistory(); updateHistoryButtons(); dirty = false; }
+    };
+    window.addEventListener("mouseup", endStroke);
+    window.addEventListener("touchend", endStroke);
+  }
+  initBrushInteraction();
 
   function setSegActive(view) {
     [...el.viewSeg.children].forEach((b) =>
@@ -2937,37 +3415,207 @@ onnxruntime-web/dist/esm/ort.min.js:
 
   el.bgbar.addEventListener("click", (e) => {
     const b = e.target.closest(".swatch");
-    if (!b) return;
+    if (!b || !state.workingCanvas) return;
     [...el.bgbar.querySelectorAll(".swatch")].forEach((s) => s.classList.remove("sel"));
     b.classList.add("sel");
     state.bg = b.dataset.bg;
     render();
+    pushHistory();
+    updateHistoryButtons();
   });
+
+  /* ---------- magic brush controls ---------- */
+  el.brushTools.addEventListener("click", (e) => {
+    const b = e.target.closest(".tool-btn");
+    if (!b) return;
+    const tool = b.dataset.tool;
+    state.tool = state.tool === tool ? null : tool; // click active tool again to deselect
+    [...el.brushTools.children].forEach((btn) =>
+      btn.classList.toggle("active", btn.dataset.tool === state.tool)
+    );
+    if (state.tool && state.view !== "result") {
+      state.view = "result";
+      setSegActive("result");
+    }
+    render();
+  });
+
+  el.brushSize.addEventListener("input", () => {
+    state.brushSize = Number(el.brushSize.value);
+  });
+
+  el.magicBrushToggle.addEventListener("change", () => {
+    state.magicBrush = el.magicBrushToggle.checked;
+  });
+
+  /* ---------- background tabs + photo library ---------- */
+  const PRESET_SCENES = [
+    { name: "Forest", fn: (g, w, h) => {
+      const grad = g.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, "#cfe8c8"); grad.addColorStop(1, "#3f6b3f");
+      g.fillStyle = grad; g.fillRect(0, 0, w, h);
+      g.fillStyle = "#2c4a2c";
+      for (let i = 0; i < 6; i++) {
+        const x = (i / 6) * w + w / 12;
+        g.beginPath(); g.moveTo(x, h * 0.35); g.lineTo(x - w * 0.08, h); g.lineTo(x + w * 0.08, h); g.closePath(); g.fill();
+      }
+    }},
+    { name: "Sunset beach", fn: (g, w, h) => {
+      const grad = g.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, "#ff9a6b"); grad.addColorStop(0.55, "#c9587c"); grad.addColorStop(1, "#f4d9a0");
+      g.fillStyle = grad; g.fillRect(0, 0, w, h);
+      g.fillStyle = "rgba(255,255,255,.25)";
+      g.beginPath(); g.arc(w * 0.7, h * 0.4, w * 0.14, 0, Math.PI * 2); g.fill();
+    }},
+    { name: "Studio gray", fn: (g, w, h) => {
+      const grad = g.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, "#e2e5e8"); grad.addColorStop(1, "#9aa1a8");
+      g.fillStyle = grad; g.fillRect(0, 0, w, h);
+    }},
+    { name: "Ocean", fn: (g, w, h) => {
+      const grad = g.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, "#8fd3f4"); grad.addColorStop(1, "#1a6ea3");
+      g.fillStyle = grad; g.fillRect(0, 0, w, h);
+    }},
+    { name: "Warm room", fn: (g, w, h) => {
+      g.fillStyle = "#d9bfa0"; g.fillRect(0, 0, w, h);
+      g.fillStyle = "#8a5a3b"; g.fillRect(0, h * 0.7, w, h * 0.3);
+    }},
+    { name: "City lights", fn: (g, w, h) => {
+      g.fillStyle = "#151c2c"; g.fillRect(0, 0, w, h);
+      for (let i = 0; i < 40; i++) {
+        g.fillStyle = `rgba(255, ${200 + Math.random() * 55 | 0}, 150, ${0.3 + Math.random() * 0.6})`;
+        g.fillRect(Math.random() * w, Math.random() * h * 0.7, 2, 2);
+      }
+    }},
+  ];
+
+  function buildPresetCanvas(scene) {
+    const c = document.createElement("canvas");
+    c.width = 240; c.height = 240;
+    scene.fn(c.getContext("2d"), 240, 240);
+    return c;
+  }
+
+  PRESET_SCENES.forEach((scene) => {
+    const b = document.createElement("button");
+    b.title = scene.name;
+    b.appendChild(buildPresetCanvas(scene));
+    b.addEventListener("click", () => {
+      if (!state.workingCanvas) return;
+      const img = new Image();
+      img.onload = () => {
+        state.bgPhotoImg = img;
+        state.bg = "photo";
+        [...el.presetGrid.children].forEach((c) => c.classList.remove("sel"));
+        b.classList.add("sel");
+        render();
+        pushHistory();
+        updateHistoryButtons();
+      };
+      img.src = buildPresetCanvas(scene).toDataURL("image/png");
+    });
+    el.presetGrid.appendChild(b);
+  });
+
+  el.bgTabs.addEventListener("click", (e) => {
+    const b = e.target.closest(".tab-btn");
+    if (!b) return;
+    state.bgTab = b.dataset.tab;
+    [...el.bgTabs.children].forEach((btn) => btn.classList.toggle("active", btn === b));
+    el.bgbar.hidden = state.bgTab !== "color";
+    el.bgPhoto.hidden = state.bgTab !== "photo";
+  });
+
+  el.uploadBgBtn.addEventListener("click", () => el.bgPhotoFile.click());
+  el.bgPhotoFile.addEventListener("change", () => {
+    const file = el.bgPhotoFile.files[0];
+    if (!file || !state.workingCanvas) return;
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      state.bgPhotoImg = img;
+      state.bg = "photo";
+      [...el.presetGrid.children].forEach((c) => c.classList.remove("sel"));
+      render();
+      pushHistory();
+      updateHistoryButtons();
+    };
+    img.src = url;
+    el.bgPhotoFile.value = "";
+  });
+
+  el.blurToggle.addEventListener("change", () => {
+    state.blurEnabled = el.blurToggle.checked;
+    el.blurAmountRow.style.display = state.blurEnabled ? "" : "none";
+    if (!state.workingCanvas) return;
+    render();
+    pushHistory();
+    updateHistoryButtons();
+  });
+
+  el.blurAmount.addEventListener("input", () => {
+    state.blurAmount = Number(el.blurAmount.value);
+    if (state.workingCanvas) render();
+  });
+  el.blurAmount.addEventListener("change", () => {
+    if (!state.workingCanvas) return;
+    pushHistory();
+    updateHistoryButtons();
+  });
+
+  /* ---------- flip / undo / redo ---------- */
+  el.flipBtn.addEventListener("click", () => {
+    if (!state.workingCanvas) return;
+    state.flipped = !state.flipped;
+    render();
+    pushHistory();
+    updateHistoryButtons();
+  });
+  el.undoBtn.addEventListener("click", undo);
+  el.redoBtn.addEventListener("click", redo);
+
+  function syncControlsFromState() {
+    el.flipBtn.disabled = !state.workingCanvas;
+    [...el.bgbar.querySelectorAll(".swatch")].forEach((s) =>
+      s.classList.toggle("sel", s.dataset.bg === state.bg)
+    );
+    el.blurToggle.checked = state.blurEnabled;
+    el.blurAmountRow.style.display = state.blurEnabled ? "" : "none";
+    el.blurAmount.value = state.blurAmount;
+    [...el.bgTabs.children].forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === state.bgTab));
+    el.bgbar.hidden = state.bgTab !== "color";
+    el.bgPhoto.hidden = state.bgTab !== "photo";
+  }
 
   /* ---------- download ---------- */
   el.download.addEventListener("click", async () => {
-    if (!state.resultBlob) return;
+    if (!state.workingCanvas) return;
+    const W = state.workingCanvas.width, H = state.workingCanvas.height;
 
-    let blob = state.resultBlob;
-
-    // If a solid background is selected, flatten it into the exported PNG.
-    if (state.bg !== "transparent") {
-      blob = await new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-          const c = document.createElement("canvas");
-          c.width = img.naturalWidth;
-          c.height = img.naturalHeight;
-          const g = c.getContext("2d");
-          g.fillStyle = state.bg;
-          g.fillRect(0, 0, c.width, c.height);
-          g.drawImage(img, 0, 0);
-          c.toBlob(resolve, "image/png");
-        };
-        img.src = state.resultUrl;
-      });
+    let out = state.workingCanvas;
+    const bgLayer = buildBackgroundLayer(W, H);
+    if (bgLayer || state.bg !== "transparent") {
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const ctx = c.getContext("2d");
+      if (bgLayer) ctx.drawImage(bgLayer, 0, 0);
+      else { ctx.fillStyle = state.bg; ctx.fillRect(0, 0, W, H); }
+      ctx.drawImage(state.workingCanvas, 0, 0);
+      out = c;
     }
 
+    if (state.flipped) {
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const ctx = c.getContext("2d");
+      ctx.translate(W, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(out, 0, 0);
+      out = c;
+    }
+
+    const blob = await exportCanvas(out);
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = `${state.name}-no-bg.png`;
