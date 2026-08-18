@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://r2designs.github.io/clear-bg/sitemap.xml
+Sitemap: https://bgfree.in/sitemap.xml
