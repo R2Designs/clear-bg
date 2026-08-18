@@ -1,4 +1,4 @@
-# Clear BG
+# Bg Free
 
 A background-removal tool that runs entirely client-side — no uploads, no server. Uses [@imgly/background-removal](https://github.com/imgly/background-removal-js) (an ISNet ONNX model via WebAssembly) plus a few post-processing passes tuned against a small objective test harness.
 
