@@ -610,6 +610,11 @@
     text-align: center;
   }
   .info-section p a { color: var(--ink); }
+  .info-section-wide { max-width: 960px; }
+  .editor-shot {
+    display: block; width: 100%; height: auto; border-radius: 16px;
+    border: 1px solid var(--line); box-shadow: 0 20px 60px -20px rgba(0,0,0,.6);
+  }
   .features-list {
     color: var(--muted); font-size: 15px; line-height: 1.7;
     margin: 0; padding: 0; list-style: none; text-align: center;
@@ -822,6 +827,10 @@
         <li><b>Background blur</b> — a portrait-style blurred backdrop instead of a full swap.</li>
         <li><b>Transparent PNG export</b> — download with a real alpha channel, no watermark.</li>
       </ul>
+    </section>
+
+    <section class="info-section info-section-wide">
+      <img class="editor-shot" src="editor-screenshot.jpg" alt="Bg Free editor showing Magic Brush, background color, and blur controls after removing a photo's background" width="1680" height="956" loading="lazy" />
     </section>
 
     <section class="info-section">
